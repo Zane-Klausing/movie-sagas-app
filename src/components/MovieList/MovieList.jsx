@@ -17,7 +17,7 @@ function MovieList() {
     }, []);
 
     function handleOnClick(movie){
-        dispatch({ type: 'SET_SELECTED_MOVIE', payload: movie });
+        // dispatch({ type: 'SET_SELECTED_MOVIE', payload: movie });
         history.push(`/details/${movie.id}`);
     }
 

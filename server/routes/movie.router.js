@@ -16,6 +16,44 @@ router.get('/', (req, res) => {
 
 });
 
+router.get('/details/:id', (req, res) =>{
+  console.log('In Details route')
+  const sqlQuery = `
+  SELECT
+  "movies"."title",
+  "movies"."poster",
+  "movies"."description",
+  "genres"."name"
+  FROM "movies"
+  JOIN "movies_genres"
+  ON "movies"."id" = "movies_genres"."movie_id"
+  JOIN "genres"
+  ON "movies_genres"."genre_id" = "genres"."id"
+  WHERE "movies"."id" = $1;
+  
+  `
+  const sqlValues = req.params.id
+
+  pool.query(sqlQuery, [sqlValues])
+  .then((dbRes)=>{
+    console.log('#######################')
+    console.log(dbRes.rows)
+    let movieDetails = {}
+    movieDetails.title = dbRes.rows[0].title;
+    movieDetails.poster = dbRes.rows[0].poster;
+    movieDetails.description = dbRes.rows[0].description;
+    movieDetails.genres = dbRes.rows.map((row) => {
+      return row.name
+    })
+    console.log('#######################')
+    console.log(movieDetails)
+    res.send(movieDetails);
+  }).catch((dbErr)=>{
+    console.error(dbErr)
+    res.sendStatus(500)
+  })
+})
+
 router.post('/', (req, res) => {
   console.log(req.body);
   // RETURNING "id" will give us back the id of the created movie

@@ -1,10 +1,20 @@
 import { useEffect } from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 
 function Details(){
     const history = useHistory();
     const selectedMovie = useSelector((store) => store.selectedMovie);
+    const params = useParams();
+    const dispatch = useDispatch();
+    useEffect(()=>{
+        console.log(params.id)
+        dispatch({
+            type: 'FETCH_MOVIE_DETAILS',
+            payload: params.id
+        })
+    }, [])
 
 function handleBackButton (){
     history.push(`/`);
@@ -15,6 +25,11 @@ function handleBackButton (){
             <img src={selectedMovie.poster}></img>
             <h3>{selectedMovie.description}</h3>
             <button onClick={()=>{handleBackButton()}}>Back</button>
+            {selectedMovie.genres.map((genre)=>{
+                return (
+                    <li>{genre}</li>
+                )}
+            )}
         </div>
     )
 }
